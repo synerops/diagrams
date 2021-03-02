@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
 
       - name: install
         run: npm install
@@ -24,7 +27,7 @@ jobs:
       - name: publish
         run: |
           npm pack
-          npm publish
+          npm publish --access public
         working-directory: ./dist
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
