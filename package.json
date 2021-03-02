@@ -1,5 +1,5 @@
 {
-  "name": "@syner/diagrams",
+  "name": "@synerops/diagrams",
   "version": "0.5.1",
   "description": "A tiny collection of lightweight React components to build diagrams with ease",
   "main": "index.js",
@@ -24,6 +24,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/synerops/diagrams.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "author": {
     "name": "Antonio Russo",
