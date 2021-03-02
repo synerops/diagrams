@@ -1,56 +1,34 @@
-name: CI/CD
+name: publish
 
 env:
   CI: true
+  NODE_ENV: production
 
-on:
-  push:
-    branches: [master]
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
+on: workflow_dispatch
+
 jobs:
-  ci-cd:
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - uses: gregoranders/nodejs-project-info@v0.0.11
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
+      - uses: actions/setup-node@v2
 
-      - name: NPM CI
+      - name: install
         run: npm install
 
-      - name: Repository build
+      - name: build
         run: npm run build
 
-      - name: Tests (with coverage)
+      - name: tests
         run: npm test -- --coverage
 
-      - name: Build website (Github pages)
+      - name: build-doc
         run: npm run build-doc --if-present
 
-      - name: Publish website on GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v2.1.2
-        with:
-          build_dir: dist-ghpages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Coveralls GitHub Action
-        uses: coverallsapp/github-action@v1.1.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Prepare distribution
-        if: "contains(steps.projectinfo.outputs.version, '-')"
+      - name: prepare
         run: cp -r ./@types ./dist/@types && cp package.json index.d.ts README.md LICENSE CHANGELOG.md CONTRIBUTING.md CODE_OF_CONDUCT.md ./dist
 
-      - name: Publish
-        if: "contains(steps.projectinfo.outputs.version, '-')"
+      - name: publish
         run: |
           npm pack
           npm publish --tag next
