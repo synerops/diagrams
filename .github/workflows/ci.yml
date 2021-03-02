@@ -2,7 +2,6 @@ name: publish
 
 env:
   CI: true
-  NODE_ENV: production
 
 on: workflow_dispatch
 
